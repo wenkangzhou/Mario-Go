@@ -3,7 +3,7 @@ extends CharacterBody2D
 const SPEED = 300.0
 const JUMP_VELOCITY = -620.0
 const GRAVITY = 800.0
-const START_POS = Vector2(100, 300)
+var start_pos = Vector2(100, 300)
 
 var is_crouching = false
 var normal_height = 60.0
@@ -16,11 +16,16 @@ var shoot_pressed = false
 var is_entering_pipe = false
 var is_finishing = false
 var pipe_timer = 0.0
+var pipe_destination = ""
 var star_power = false
 var star_timer = 0.0
 var star_tween: Tween = null
 var is_dying = false
 var shoot_cooldown = 0.0
+var anim_timer = 0.0
+var run_frame = 0
+var was_on_floor = false
+var run_dust_timer = 0.0
 
 func _ready():
 	var feet_area = Area2D.new()
@@ -52,10 +57,8 @@ func _physics_process(delta: float) -> void:
 		if pipe_timer >= 0.5:
 			is_entering_pipe = false
 			pipe_timer = 0
-			get_parent().add_life()
-			reset_size()
-			position = START_POS
-			velocity = Vector2.ZERO
+			get_parent().on_pipe_entered(pipe_destination)
+			pipe_destination = ""
 		return
 
 	# 加速跑（B键或Shift）
@@ -71,8 +74,9 @@ func _physics_process(delta: float) -> void:
 			is_crouching = true
 			$CollisionShape2D.shape.size.y = crouch_height
 			$CollisionShape2D.position.y = 15
-			$Sprite2D.scale.y = 0.6 if size_state == "small" else 0.45
-			$Sprite2D.position.y = 12 if size_state == "small" else 22
+			if get_parent().current_level != "1-2":
+				$Sprite2D.scale.y = 0.6 if size_state == "small" else 0.45
+				$Sprite2D.position.y = 12 if size_state == "small" else 22
 	else:
 		if is_crouching:
 			var stand_height = 60 if size_state == "small" else 80
@@ -81,8 +85,30 @@ func _physics_process(delta: float) -> void:
 				is_crouching = false
 				$CollisionShape2D.shape.size.y = stand_height
 				$CollisionShape2D.position.y = 0 if size_state == "small" else -10
-				$Sprite2D.scale.y = 1.0
-				$Sprite2D.position.y = 0
+				if get_parent().current_level != "1-2":
+					$Sprite2D.scale.y = 1.0
+					$Sprite2D.position.y = 0
+
+	# 1-2 天台关卡动画切换
+	var is_summer = get_parent().current_level == "1-2"
+	if is_summer:
+		if is_crouching:
+			$Sprite2D.texture = load("res://summer_player_crouch.png")
+		elif not is_on_floor():
+			$Sprite2D.texture = load("res://summer_player_jump.png")
+		elif abs(velocity.x) > 10:
+			anim_timer += delta
+			if anim_timer >= 0.12:
+				anim_timer = 0
+				run_frame = (run_frame + 1) % 3
+				match run_frame:
+					0: $Sprite2D.texture = load("res://summer_player_run1.png")
+					1: $Sprite2D.texture = load("res://summer_player_run2.png")
+					2: $Sprite2D.texture = load("res://summer_player_run3.png")
+		else:
+			anim_timer = 0
+			run_frame = 0
+			$Sprite2D.texture = load("res://summer_player_idle.png")
 
 	if not is_on_floor():
 		velocity.y += GRAVITY * delta
@@ -118,6 +144,20 @@ func _physics_process(delta: float) -> void:
 
 	move_and_slide()
 
+	# Landing dust
+	if is_on_floor() and not was_on_floor:
+		get_parent().create_landing_dust(position)
+	was_on_floor = is_on_floor()
+
+	# Running dust
+	if is_on_floor() and abs(velocity.x) > 120:
+		run_dust_timer -= delta
+		if run_dust_timer <= 0:
+			run_dust_timer = 0.12
+			get_parent().create_run_dust(position, $Sprite2D.flip_h)
+	else:
+		run_dust_timer = 0.0
+
 	# 碰到敌人
 	for i in get_slide_collision_count():
 		var collision = get_slide_collision(i)
@@ -139,6 +179,7 @@ func _physics_process(delta: float) -> void:
 							collider.is_sliding = true
 							collider.dir = 1 if position.x < collider.position.x else -1
 					velocity.y = -250
+					get_parent().shake_camera(2.5, 0.15)
 					get_parent().add_stomp_score(position)
 				else:
 					if collider.is_shell and not collider.is_sliding:
@@ -150,6 +191,7 @@ func _physics_process(delta: float) -> void:
 			elif collision.get_normal().y < -0.5:
 				collider.die()
 				velocity.y = -250
+				get_parent().shake_camera(3.0, 0.15)
 				get_parent().add_stomp_score(position)
 			else:
 				take_damage()
@@ -192,6 +234,7 @@ func _physics_process(delta: float) -> void:
 		for body in $FeetArea.get_overlapping_bodies():
 			if body.is_in_group("warp_pipe"):
 				on_warp = true
+				pipe_destination = body.get_meta("destination", "bonus")
 				break
 		if on_warp:
 			pipe_timer += delta
@@ -201,8 +244,11 @@ func _physics_process(delta: float) -> void:
 				get_parent().play_sfx("pipe")
 		else:
 			pipe_timer = 0
+			pipe_destination = ""
 	else:
 		pipe_timer = 0
+		pipe_destination = ""
+
 
 	# 掉出世界底部，死亡动画
 	if position.y > 650 and not is_dying:
@@ -221,7 +267,7 @@ func _physics_process(delta: float) -> void:
 			star_tween.kill()
 		if has_node("CollisionShape2D"):
 			$CollisionShape2D.set_deferred("disabled", false)
-		position = START_POS
+		position = start_pos
 		velocity = Vector2.ZERO
 		if get_parent().lives > 0:
 			get_parent().bgm_player.play()
@@ -284,6 +330,7 @@ func get_star():
 func take_damage():
 	if star_power or invincible:
 		return
+	get_parent().flash_damage()
 	if size_state == "fire":
 		size_state = "big"
 		can_shoot = false
@@ -294,7 +341,7 @@ func take_damage():
 		get_parent().bgm_player.stop()
 		get_parent().lose_life()
 		get_parent().play_sfx("hurt")
-		position = START_POS
+		position = start_pos
 		velocity = Vector2.ZERO
 		star_power = false
 		if star_tween:
@@ -316,7 +363,10 @@ func reset_size():
 	can_shoot = false
 	$CollisionShape2D.shape.size.y = 60
 	$CollisionShape2D.position.y = 0
-	$Sprite2D.texture = load("res://player.png")
+	if get_parent().current_level == "1-2":
+		$Sprite2D.texture = load("res://summer_player_idle.png")
+	else:
+		$Sprite2D.texture = load("res://player.png")
 	$Sprite2D.scale.y = 1.0
 	$Sprite2D.position.y = 0
 	$Sprite2D.modulate = Color(1, 1, 1, 1)

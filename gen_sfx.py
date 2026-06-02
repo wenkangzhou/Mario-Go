@@ -63,4 +63,36 @@ def save_pipe(path, sample_rate=22050):
 
 save_pipe('pipe.wav')
 save_bgm('bgm.wav', 22050)
+
+# 夏日天台 BGM - 缓慢怀旧的芯片音乐
+
+def save_summer_bgm(path, sample_rate=22050):
+    def square(t, freq):
+        return 1.0 if math.sin(2 * math.pi * freq * t) > 0 else -1.0
+
+    melody = [
+        (60, 0.5), (64, 0.5), (67, 0.5), (72, 0.75),
+        (67, 0.5), (64, 0.5), (60, 0.5), (62, 0.75),
+        (64, 0.5), (67, 0.5), (72, 0.5), (74, 0.75),
+        (72, 0.5), (67, 0.5), (64, 0.5), (60, 1.0),
+    ]
+
+    samples = []
+    t = 0.0
+    for note, dur in melody:
+        freq = note_freq(note)
+        n = int(sample_rate * dur)
+        for i in range(n):
+            sample = square(t, freq) * 0.15
+            samples.append(sample)
+            t += 1.0 / sample_rate
+
+    with wave.open(path, 'w') as w:
+        w.setnchannels(1)
+        w.setsampwidth(2)
+        w.setframerate(sample_rate)
+        for s in samples:
+            w.writeframes(struct.pack('<h', int(s * 32767)))
+
+save_summer_bgm('summer_bgm.wav', 22050)
 print("音效生成完成")

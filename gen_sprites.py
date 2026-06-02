@@ -27,31 +27,29 @@ def add_noise(img, bbox, density=0.15, color_var=20):
 
 # ============== 玩家 40x60 ==============
 def draw_player(draw, w, h):
-    # SMB1 style small Mario: 12x16 grid, px=3 -> 36x48, centered in 40x60
+    # SMB1 exact small Mario: 12x16 grid, px=3 -> 36x48, centered in 40x60
     grid = [
-        "....RRRR....",
-        "...RRRRRR...",
-        "...HHSSS....",
-        "..HHSSSS....",
-        "..HHKSSS....",
-        "..SSHHHH....",
-        "..SRRRRRR...",
-        "..RRBBRR....",
-        "...BBBB.....",
-        "...BBBB.....",
-        "..BBBBBB....",
-        "..BBBBBB....",
-        "..BB..BB....",
-        "..BB..BB....",
-        "..HH..HH....",
-        "..HH..HH....",
+        "...RRRRR....",
+        "..RRRRRRRRR.",
+        "..HHHSSHS...",
+        ".HSHSSSHSSS.",
+        ".HSHHSSSHSSS",
+        ".HHSSSSHHHH.",
+        "...SSSSSSS..",
+        "..HHRHHH....",
+        ".HHHRHHRHHH.",
+        "HHHHRRRRHHHH",
+        "SSHSRRSRHSSS",
+        "SSSRRRRRRSSS",
+        "SSRRRRRRRRSS",
+        "..RRR..RRR..",
+        ".HHH....HHH.",
+        "HHHH....HHHH",
     ]
     palette = {
-        'R': (255, 50, 50),
-        'H': (140, 70, 30),
-        'S': (255, 200, 140),
-        'K': (0, 0, 0),
-        'B': (60, 100, 240),
+        'R': (220, 40, 20),
+        'H': (130, 90, 10),
+        'S': (255, 190, 130),
     }
     draw_grid(draw, grid, palette, px=3, ox=2, oy=6)
 
@@ -393,61 +391,47 @@ def draw_flag(draw, w, h):
 
 # ============== 乌龟 40x40 ==============
 def draw_koopa(draw, w, h):
-    # SMB1 style Koopa: 20x20 grid, px=2 -> 40x40
-    grid = [
-        "....................",
-        "....................",
-        "....................",
-        ".........GGGG.......",
-        ".......GGGGGGGG.....",
-        "......GGGGGGGGGG....",
-        ".....GGGGGGGGGGGG...",
-        ".....GGGGGGGGGGGG...",
-        ".....GGGGGGGGGGGG...",
-        ".....GGGGGGGGGGGG...",
-        ".....GGGGGGGGGGGG...",
-        ".....GGGGGGGGGWWGG..",
-        "......GGGGGGGGWKGGG.",
-        ".......GGGGGGGGGG...",
-        "........GGGGGGG.....",
-        ".........GGGG.......",
-        ".........GG..GG.....",
-        ".........GG..GG.....",
-        ".........GG..GG.....",
-        "....................",
-    ]
-    palette = {
-        'G': (50, 180, 50),
-        'W': (255, 255, 255),
-        'K': (0, 0, 0),
-    }
-    draw_grid(draw, grid, palette, px=2, ox=0, oy=0)
+    # SMB1 style Koopa: green shell with white diagonal ridges + long neck + round head
+    # Shell (green dome with flat bottom)
+    draw.ellipse([2, 6, 30, 24], fill=(50, 180, 50), outline=(30, 130, 30), width=2)
+    draw.rectangle([2, 20, 30, 26], fill=(50, 180, 50))
+
+    # White diagonal ridges on shell (diamond pattern)
+    draw.line([(6, 10), (10, 14)], fill=(255, 255, 255), width=2)
+    draw.line([(12, 10), (16, 14)], fill=(255, 255, 255), width=2)
+    draw.line([(18, 10), (22, 14)], fill=(255, 255, 255), width=2)
+    draw.line([(24, 10), (28, 14)], fill=(255, 255, 255), width=2)
+    draw.line([(6, 16), (10, 20)], fill=(255, 255, 255), width=2)
+    draw.line([(12, 16), (16, 20)], fill=(255, 255, 255), width=2)
+    draw.line([(18, 16), (22, 20)], fill=(255, 255, 255), width=2)
+    draw.line([(24, 16), (28, 20)], fill=(255, 255, 255), width=2)
+
+    # Neck (skin tone, thin)
+    draw.rectangle([28, 14, 32, 24], fill=(255, 220, 150))
+
+    # Head (white round face)
+    draw.ellipse([28, 8, 38, 18], fill=(255, 255, 255))
+
+    # Eye (black dot + white highlight)
+    draw.ellipse([32, 10, 36, 14], fill=(0, 0, 0))
+    draw.point([(33, 11)], fill=(255, 255, 255))
+
+    # Feet (small green blocks)
+    draw.rectangle([8, 26, 14, 32], fill=(50, 180, 50))
+    draw.rectangle([20, 26, 26, 32], fill=(50, 180, 50))
 
 # ============== 龟壳 30x30 ==============
 def draw_shell(draw, w, h):
-    # SMB1 style shell: 15x15 grid, px=2 -> 30x30
-    grid = [
-        "...............",
-        "...............",
-        ".....GGGGG.....",
-        "...GGGGGGGGG...",
-        "..GGGGGGGGGGG..",
-        ".GGGGGGGGGGGGG.",
-        ".GGGDGGDGGDGGG.",
-        ".GGGDGGDGGDGGG.",
-        ".GGGDGGDGGDGGG.",
-        ".GGGDGGDGGDGGG.",
-        ".GGGDGGDGGDGGG.",
-        "..GGDGGDGGDGG..",
-        "..GGDGGDGGDGG..",
-        "...GGGGGGGGG...",
-        ".....GGGGG.....",
-    ]
-    palette = {
-        'G': (50, 180, 50),
-        'D': (30, 130, 30),
-    }
-    draw_grid(draw, grid, palette, px=2, ox=0, oy=0)
+    # SMB1 style shell: flattened green dome with vertical ridges
+    # Main dome
+    draw.ellipse([2, 2, 28, 20], fill=(50, 180, 50), outline=(30, 130, 30), width=2)
+    # Flat bottom
+    draw.rectangle([2, 16, 28, 24], fill=(50, 180, 50))
+    # Vertical ridges
+    draw.line([(10, 4), (10, 22)], fill=(30, 130, 30), width=2)
+    draw.line([(18, 4), (18, 22)], fill=(30, 130, 30), width=2)
+    # Bottom rim
+    draw.line([(2, 22), (28, 22)], fill=(30, 130, 30), width=2)
 
 # ============== 无敌星 40x40 ==============
 def draw_star(draw, w, h):
@@ -550,6 +534,589 @@ def draw_cloud(draw, w, h):
     draw.ellipse([15, 28, 35, 36], fill=sh)
     draw.ellipse([45, 28, 65, 36], fill=sh)
 
+# ============== 小夏主角 40x60 ==============
+def draw_summer_player_idle(draw, w, h):
+    # Shoes
+    draw.rectangle([10, 54, 18, 60], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([22, 54, 30, 60], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([10, 58, 18, 60], fill=(215, 35, 35))
+    draw.rectangle([22, 58, 30, 60], fill=(215, 35, 35))
+    # Socks
+    draw.rectangle([12, 52, 16, 54], fill=(255, 255, 255))
+    draw.rectangle([24, 52, 28, 54], fill=(255, 255, 255))
+    # Legs
+    draw.rectangle([11, 42, 17, 52], fill=(255, 205, 155))
+    draw.rectangle([23, 42, 29, 52], fill=(255, 205, 155))
+    # Shorts
+    draw.rectangle([10, 32, 30, 44], fill=(55, 85, 185))
+    draw.rectangle([10, 32, 30, 34], fill=(85, 115, 215))
+    draw.rectangle([10, 32, 12, 44], fill=(85, 115, 215))
+    draw.rectangle([28, 32, 30, 44], fill=(35, 65, 155))
+    # T-shirt
+    draw.rectangle([8, 16, 32, 34], fill=(225, 55, 35))
+    draw.rectangle([8, 16, 32, 18], fill=(255, 85, 65))
+    draw.rectangle([8, 16, 10, 34], fill=(255, 85, 65))
+    draw.rectangle([30, 16, 32, 34], fill=(185, 35, 15))
+    # Arms
+    draw.rectangle([4, 20, 8, 34], fill=(255, 205, 155))
+    draw.rectangle([32, 20, 36, 34], fill=(255, 205, 155))
+    draw.rectangle([4, 20, 8, 22], fill=(255, 225, 185))
+    draw.rectangle([32, 20, 36, 22], fill=(255, 225, 185))
+    # Hands
+    draw.ellipse([3, 32, 9, 38], fill=(255, 205, 155))
+    draw.ellipse([31, 32, 37, 38], fill=(255, 205, 155))
+    # Backpack straps
+    draw.line([(14, 16), (12, 32)], fill=(45, 45, 45), width=2)
+    draw.line([(26, 16), (28, 32)], fill=(45, 45, 45), width=2)
+    # Backpack
+    draw.rectangle([6, 18, 34, 30], fill=(55, 55, 55))
+    draw.rectangle([6, 18, 34, 20], fill=(75, 75, 75))
+    draw.rectangle([6, 18, 8, 30], fill=(75, 75, 75))
+    draw.rectangle([32, 18, 34, 30], fill=(35, 35, 35))
+    # Neck
+    draw.rectangle([17, 14, 23, 16], fill=(255, 205, 155))
+    # Head
+    draw.ellipse([12, 2, 28, 16], fill=(255, 205, 155))
+    draw.ellipse([12, 2, 28, 4], fill=(255, 225, 185))
+    draw.ellipse([26, 6, 28, 14], fill=(235, 185, 135))
+    # Hair
+    draw.rectangle([12, 0, 28, 4], fill=(25, 25, 25))
+    draw.rectangle([10, 2, 14, 6], fill=(25, 25, 25))
+    draw.rectangle([26, 2, 30, 6], fill=(25, 25, 25))
+    draw.rectangle([14, 0, 18, 2], fill=(35, 35, 35))
+    draw.rectangle([22, 0, 26, 2], fill=(35, 35, 35))
+    draw.rectangle([12, 4, 14, 6], fill=(35, 35, 35))
+    draw.rectangle([26, 4, 28, 6], fill=(35, 35, 35))
+    draw.rectangle([16, 0, 24, 1], fill=(15, 15, 15))
+    # Eyes
+    draw.ellipse([16, 8, 20, 12], fill=(255, 255, 255))
+    draw.ellipse([20, 8, 24, 12], fill=(255, 255, 255))
+    draw.ellipse([17, 9, 19, 11], fill=(15, 15, 15))
+    draw.ellipse([21, 9, 23, 11], fill=(15, 15, 15))
+    draw.point([(18, 10)], fill=(255, 255, 255))
+    draw.point([(22, 10)], fill=(255, 255, 255))
+    # Mouth
+    draw.arc([17, 10, 23, 14], start=0, end=180, fill=(200, 120, 100), width=1)
+    # Blush
+    draw.ellipse([14, 11, 16, 13], fill=(255, 160, 160))
+    draw.ellipse([24, 11, 26, 13], fill=(255, 160, 160))
+
+def draw_summer_player_run1(draw, w, h):
+    # Shoes (right leg forward)
+    draw.rectangle([18, 52, 26, 58], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([6, 54, 14, 60], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([18, 56, 26, 58], fill=(215, 35, 35))
+    draw.rectangle([6, 58, 14, 60], fill=(215, 35, 35))
+    # Socks
+    draw.rectangle([20, 50, 24, 52], fill=(255, 255, 255))
+    draw.rectangle([8, 52, 12, 54], fill=(255, 255, 255))
+    # Legs
+    draw.rectangle([19, 40, 25, 50], fill=(255, 205, 155))
+    draw.rectangle([9, 42, 15, 52], fill=(255, 205, 155))
+    # Shorts
+    draw.rectangle([10, 32, 30, 44], fill=(55, 85, 185))
+    draw.rectangle([10, 32, 30, 34], fill=(85, 115, 215))
+    draw.rectangle([10, 32, 12, 44], fill=(85, 115, 215))
+    draw.rectangle([28, 32, 30, 44], fill=(35, 65, 155))
+    # T-shirt
+    draw.rectangle([8, 16, 32, 34], fill=(225, 55, 35))
+    draw.rectangle([8, 16, 32, 18], fill=(255, 85, 65))
+    draw.rectangle([8, 16, 10, 34], fill=(255, 85, 65))
+    draw.rectangle([30, 16, 32, 34], fill=(185, 35, 15))
+    # Arms (near back, far forward)
+    draw.rectangle([2, 22, 6, 32], fill=(255, 205, 155))
+    draw.rectangle([34, 18, 38, 28], fill=(255, 205, 155))
+    draw.ellipse([1, 30, 7, 36], fill=(255, 205, 155))
+    draw.ellipse([33, 26, 39, 32], fill=(255, 205, 155))
+    # Backpack straps
+    draw.line([(14, 16), (12, 32)], fill=(45, 45, 45), width=2)
+    draw.line([(26, 16), (28, 32)], fill=(45, 45, 45), width=2)
+    # Backpack
+    draw.rectangle([6, 18, 34, 30], fill=(55, 55, 55))
+    draw.rectangle([6, 18, 34, 20], fill=(75, 75, 75))
+    draw.rectangle([6, 18, 8, 30], fill=(75, 75, 75))
+    draw.rectangle([32, 18, 34, 30], fill=(35, 35, 35))
+    # Neck
+    draw.rectangle([17, 14, 23, 16], fill=(255, 205, 155))
+    # Head
+    draw.ellipse([12, 2, 28, 16], fill=(255, 205, 155))
+    draw.ellipse([12, 2, 28, 4], fill=(255, 225, 185))
+    draw.ellipse([26, 6, 28, 14], fill=(235, 185, 135))
+    # Hair
+    draw.rectangle([12, 0, 28, 4], fill=(25, 25, 25))
+    draw.rectangle([10, 2, 14, 6], fill=(25, 25, 25))
+    draw.rectangle([26, 2, 30, 6], fill=(25, 25, 25))
+    draw.rectangle([14, 0, 18, 2], fill=(35, 35, 35))
+    draw.rectangle([22, 0, 26, 2], fill=(35, 35, 35))
+    draw.rectangle([12, 4, 14, 6], fill=(35, 35, 35))
+    draw.rectangle([26, 4, 28, 6], fill=(35, 35, 35))
+    draw.rectangle([16, 0, 24, 1], fill=(15, 15, 15))
+    # Eyes
+    draw.ellipse([16, 8, 20, 12], fill=(255, 255, 255))
+    draw.ellipse([20, 8, 24, 12], fill=(255, 255, 255))
+    draw.ellipse([17, 9, 19, 11], fill=(15, 15, 15))
+    draw.ellipse([21, 9, 23, 11], fill=(15, 15, 15))
+    draw.point([(18, 10)], fill=(255, 255, 255))
+    draw.point([(22, 10)], fill=(255, 255, 255))
+    # Mouth
+    draw.arc([17, 10, 23, 14], start=0, end=180, fill=(200, 120, 100), width=1)
+    # Blush
+    draw.ellipse([14, 11, 16, 13], fill=(255, 160, 160))
+    draw.ellipse([24, 11, 26, 13], fill=(255, 160, 160))
+
+def draw_summer_player_run2(draw, w, h):
+    # Shoes
+    draw.rectangle([11, 50, 19, 56], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([21, 50, 29, 56], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([11, 54, 19, 56], fill=(215, 35, 35))
+    draw.rectangle([21, 54, 29, 56], fill=(215, 35, 35))
+    # Socks
+    draw.rectangle([13, 48, 17, 50], fill=(255, 255, 255))
+    draw.rectangle([23, 48, 27, 50], fill=(255, 255, 255))
+    # Legs
+    draw.rectangle([11, 40, 17, 48], fill=(255, 205, 155))
+    draw.rectangle([23, 40, 29, 48], fill=(255, 205, 155))
+    # Shorts
+    draw.rectangle([10, 32, 30, 44], fill=(55, 85, 185))
+    draw.rectangle([10, 32, 30, 34], fill=(85, 115, 215))
+    draw.rectangle([10, 32, 12, 44], fill=(85, 115, 215))
+    draw.rectangle([28, 32, 30, 44], fill=(35, 65, 155))
+    # T-shirt
+    draw.rectangle([8, 16, 32, 34], fill=(225, 55, 35))
+    draw.rectangle([8, 16, 32, 18], fill=(255, 85, 65))
+    draw.rectangle([8, 16, 10, 34], fill=(255, 85, 65))
+    draw.rectangle([30, 16, 32, 34], fill=(185, 35, 15))
+    # Arms
+    draw.rectangle([4, 20, 8, 32], fill=(255, 205, 155))
+    draw.rectangle([32, 20, 36, 32], fill=(255, 205, 155))
+    draw.ellipse([3, 30, 9, 36], fill=(255, 205, 155))
+    draw.ellipse([31, 30, 37, 36], fill=(255, 205, 155))
+    # Backpack straps
+    draw.line([(14, 16), (12, 32)], fill=(45, 45, 45), width=2)
+    draw.line([(26, 16), (28, 32)], fill=(45, 45, 45), width=2)
+    # Backpack
+    draw.rectangle([6, 18, 34, 30], fill=(55, 55, 55))
+    draw.rectangle([6, 18, 34, 20], fill=(75, 75, 75))
+    draw.rectangle([6, 18, 8, 30], fill=(75, 75, 75))
+    draw.rectangle([32, 18, 34, 30], fill=(35, 35, 35))
+    # Neck
+    draw.rectangle([17, 14, 23, 16], fill=(255, 205, 155))
+    # Head
+    draw.ellipse([12, 2, 28, 16], fill=(255, 205, 155))
+    draw.ellipse([12, 2, 28, 4], fill=(255, 225, 185))
+    draw.ellipse([26, 6, 28, 14], fill=(235, 185, 135))
+    # Hair
+    draw.rectangle([12, 0, 28, 4], fill=(25, 25, 25))
+    draw.rectangle([10, 2, 14, 6], fill=(25, 25, 25))
+    draw.rectangle([26, 2, 30, 6], fill=(25, 25, 25))
+    draw.rectangle([14, 0, 18, 2], fill=(35, 35, 35))
+    draw.rectangle([22, 0, 26, 2], fill=(35, 35, 35))
+    draw.rectangle([12, 4, 14, 6], fill=(35, 35, 35))
+    draw.rectangle([26, 4, 28, 6], fill=(35, 35, 35))
+    draw.rectangle([16, 0, 24, 1], fill=(15, 15, 15))
+    # Eyes
+    draw.ellipse([16, 8, 20, 12], fill=(255, 255, 255))
+    draw.ellipse([20, 8, 24, 12], fill=(255, 255, 255))
+    draw.ellipse([17, 9, 19, 11], fill=(15, 15, 15))
+    draw.ellipse([21, 9, 23, 11], fill=(15, 15, 15))
+    draw.point([(18, 10)], fill=(255, 255, 255))
+    draw.point([(22, 10)], fill=(255, 255, 255))
+    # Mouth
+    draw.arc([17, 10, 23, 14], start=0, end=180, fill=(200, 120, 100), width=1)
+    # Blush
+    draw.ellipse([14, 11, 16, 13], fill=(255, 160, 160))
+    draw.ellipse([24, 11, 26, 13], fill=(255, 160, 160))
+
+def draw_summer_player_run3(draw, w, h):
+    # Shoes (left leg forward)
+    draw.rectangle([6, 54, 14, 60], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([18, 52, 26, 58], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([6, 58, 14, 60], fill=(215, 35, 35))
+    draw.rectangle([18, 56, 26, 58], fill=(215, 35, 35))
+    # Socks
+    draw.rectangle([8, 52, 12, 54], fill=(255, 255, 255))
+    draw.rectangle([20, 50, 24, 52], fill=(255, 255, 255))
+    # Legs
+    draw.rectangle([9, 42, 15, 52], fill=(255, 205, 155))
+    draw.rectangle([19, 40, 25, 50], fill=(255, 205, 155))
+    # Shorts
+    draw.rectangle([10, 32, 30, 44], fill=(55, 85, 185))
+    draw.rectangle([10, 32, 30, 34], fill=(85, 115, 215))
+    draw.rectangle([10, 32, 12, 44], fill=(85, 115, 215))
+    draw.rectangle([28, 32, 30, 44], fill=(35, 65, 155))
+    # T-shirt
+    draw.rectangle([8, 16, 32, 34], fill=(225, 55, 35))
+    draw.rectangle([8, 16, 32, 18], fill=(255, 85, 65))
+    draw.rectangle([8, 16, 10, 34], fill=(255, 85, 65))
+    draw.rectangle([30, 16, 32, 34], fill=(185, 35, 15))
+    # Arms (near forward, far back)
+    draw.rectangle([2, 18, 6, 28], fill=(255, 205, 155))
+    draw.rectangle([34, 22, 38, 32], fill=(255, 205, 155))
+    draw.ellipse([1, 26, 7, 32], fill=(255, 205, 155))
+    draw.ellipse([33, 30, 39, 36], fill=(255, 205, 155))
+    # Backpack straps
+    draw.line([(14, 16), (12, 32)], fill=(45, 45, 45), width=2)
+    draw.line([(26, 16), (28, 32)], fill=(45, 45, 45), width=2)
+    # Backpack
+    draw.rectangle([6, 18, 34, 30], fill=(55, 55, 55))
+    draw.rectangle([6, 18, 34, 20], fill=(75, 75, 75))
+    draw.rectangle([6, 18, 8, 30], fill=(75, 75, 75))
+    draw.rectangle([32, 18, 34, 30], fill=(35, 35, 35))
+    # Neck
+    draw.rectangle([17, 14, 23, 16], fill=(255, 205, 155))
+    # Head
+    draw.ellipse([12, 2, 28, 16], fill=(255, 205, 155))
+    draw.ellipse([12, 2, 28, 4], fill=(255, 225, 185))
+    draw.ellipse([26, 6, 28, 14], fill=(235, 185, 135))
+    # Hair
+    draw.rectangle([12, 0, 28, 4], fill=(25, 25, 25))
+    draw.rectangle([10, 2, 14, 6], fill=(25, 25, 25))
+    draw.rectangle([26, 2, 30, 6], fill=(25, 25, 25))
+    draw.rectangle([14, 0, 18, 2], fill=(35, 35, 35))
+    draw.rectangle([22, 0, 26, 2], fill=(35, 35, 35))
+    draw.rectangle([12, 4, 14, 6], fill=(35, 35, 35))
+    draw.rectangle([26, 4, 28, 6], fill=(35, 35, 35))
+    draw.rectangle([16, 0, 24, 1], fill=(15, 15, 15))
+    # Eyes
+    draw.ellipse([16, 8, 20, 12], fill=(255, 255, 255))
+    draw.ellipse([20, 8, 24, 12], fill=(255, 255, 255))
+    draw.ellipse([17, 9, 19, 11], fill=(15, 15, 15))
+    draw.ellipse([21, 9, 23, 11], fill=(15, 15, 15))
+    draw.point([(18, 10)], fill=(255, 255, 255))
+    draw.point([(22, 10)], fill=(255, 255, 255))
+    # Mouth
+    draw.arc([17, 10, 23, 14], start=0, end=180, fill=(200, 120, 100), width=1)
+    # Blush
+    draw.ellipse([14, 11, 16, 13], fill=(255, 160, 160))
+    draw.ellipse([24, 11, 26, 13], fill=(255, 160, 160))
+
+def draw_summer_player_jump(draw, w, h):
+    # Shoes (tucked back)
+    draw.rectangle([6, 46, 14, 52], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([18, 44, 26, 50], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([6, 50, 14, 52], fill=(215, 35, 35))
+    draw.rectangle([18, 48, 26, 50], fill=(215, 35, 35))
+    # Legs (bent back)
+    draw.rectangle([9, 38, 15, 46], fill=(255, 205, 155))
+    draw.rectangle([21, 36, 27, 44], fill=(255, 205, 155))
+    # Shorts
+    draw.rectangle([10, 26, 30, 38], fill=(55, 85, 185))
+    draw.rectangle([10, 26, 30, 28], fill=(85, 115, 215))
+    draw.rectangle([10, 26, 12, 38], fill=(85, 115, 215))
+    draw.rectangle([28, 26, 30, 38], fill=(35, 65, 155))
+    # T-shirt
+    draw.rectangle([8, 12, 32, 28], fill=(225, 55, 35))
+    draw.rectangle([8, 12, 32, 14], fill=(255, 85, 65))
+    draw.rectangle([8, 12, 10, 28], fill=(255, 85, 65))
+    draw.rectangle([30, 12, 32, 28], fill=(185, 35, 15))
+    # Arms (raised)
+    draw.rectangle([2, 6, 6, 16], fill=(255, 205, 155))
+    draw.rectangle([34, 6, 38, 16], fill=(255, 205, 155))
+    draw.ellipse([1, 2, 7, 8], fill=(255, 205, 155))
+    draw.ellipse([33, 2, 39, 8], fill=(255, 205, 155))
+    # Backpack straps
+    draw.line([(14, 12), (12, 26)], fill=(45, 45, 45), width=2)
+    draw.line([(26, 12), (28, 26)], fill=(45, 45, 45), width=2)
+    # Backpack
+    draw.rectangle([6, 14, 34, 26], fill=(55, 55, 55))
+    draw.rectangle([6, 14, 34, 16], fill=(75, 75, 75))
+    draw.rectangle([6, 14, 8, 26], fill=(75, 75, 75))
+    draw.rectangle([32, 14, 34, 26], fill=(35, 35, 35))
+    # Neck
+    draw.rectangle([17, 10, 23, 12], fill=(255, 205, 155))
+    # Head
+    draw.ellipse([12, 0, 28, 12], fill=(255, 205, 155))
+    draw.ellipse([12, 0, 28, 2], fill=(255, 225, 185))
+    draw.ellipse([26, 4, 28, 10], fill=(235, 185, 135))
+    # Hair
+    draw.rectangle([12, 0, 28, 3], fill=(25, 25, 25))
+    draw.rectangle([10, 1, 14, 4], fill=(25, 25, 25))
+    draw.rectangle([26, 1, 30, 4], fill=(25, 25, 25))
+    draw.rectangle([14, 0, 18, 1], fill=(35, 35, 35))
+    draw.rectangle([22, 0, 26, 1], fill=(35, 35, 35))
+    # Eyes (looking up)
+    draw.ellipse([16, 4, 20, 7], fill=(255, 255, 255))
+    draw.ellipse([20, 4, 24, 7], fill=(255, 255, 255))
+    draw.ellipse([17, 4, 19, 6], fill=(15, 15, 15))
+    draw.ellipse([21, 4, 23, 6], fill=(15, 15, 15))
+    draw.point([(18, 5)], fill=(255, 255, 255))
+    draw.point([(22, 5)], fill=(255, 255, 255))
+    # Mouth (open)
+    draw.ellipse([19, 7, 21, 9], fill=(200, 100, 100))
+
+def draw_summer_player_crouch(draw, w, h):
+    # Shoes
+    draw.rectangle([10, 48, 18, 54], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([22, 48, 30, 54], fill=(240, 240, 240), outline=(200, 200, 200), width=1)
+    draw.rectangle([10, 52, 18, 54], fill=(215, 35, 35))
+    draw.rectangle([22, 52, 30, 54], fill=(215, 35, 35))
+    # Legs (bent)
+    draw.rectangle([11, 38, 17, 48], fill=(255, 205, 155))
+    draw.rectangle([23, 38, 29, 48], fill=(255, 205, 155))
+    # Shorts
+    draw.rectangle([10, 30, 30, 40], fill=(55, 85, 185))
+    draw.rectangle([10, 30, 30, 32], fill=(85, 115, 215))
+    draw.rectangle([10, 30, 12, 40], fill=(85, 115, 215))
+    draw.rectangle([28, 30, 30, 40], fill=(35, 65, 155))
+    # T-shirt
+    draw.rectangle([8, 16, 32, 32], fill=(225, 55, 35))
+    draw.rectangle([8, 16, 32, 18], fill=(255, 85, 65))
+    draw.rectangle([8, 16, 10, 32], fill=(255, 85, 65))
+    draw.rectangle([30, 16, 32, 32], fill=(185, 35, 15))
+    # Arms (forward)
+    draw.rectangle([2, 24, 6, 34], fill=(255, 205, 155))
+    draw.rectangle([34, 24, 38, 34], fill=(255, 205, 155))
+    draw.ellipse([1, 32, 7, 38], fill=(255, 205, 155))
+    draw.ellipse([33, 32, 39, 38], fill=(255, 205, 155))
+    # Backpack straps
+    draw.line([(14, 16), (12, 30)], fill=(45, 45, 45), width=2)
+    draw.line([(26, 16), (28, 30)], fill=(45, 45, 45), width=2)
+    # Backpack
+    draw.rectangle([6, 18, 34, 28], fill=(55, 55, 55))
+    draw.rectangle([6, 18, 34, 20], fill=(75, 75, 75))
+    draw.rectangle([6, 18, 8, 28], fill=(75, 75, 75))
+    draw.rectangle([32, 18, 34, 28], fill=(35, 35, 35))
+    # Neck
+    draw.rectangle([17, 14, 23, 16], fill=(255, 205, 155))
+    # Head
+    draw.ellipse([12, 2, 28, 16], fill=(255, 205, 155))
+    draw.ellipse([12, 2, 28, 4], fill=(255, 225, 185))
+    draw.ellipse([26, 6, 28, 14], fill=(235, 185, 135))
+    # Hair
+    draw.rectangle([12, 0, 28, 4], fill=(25, 25, 25))
+    draw.rectangle([10, 2, 14, 6], fill=(25, 25, 25))
+    draw.rectangle([26, 2, 30, 6], fill=(25, 25, 25))
+    draw.rectangle([14, 0, 18, 2], fill=(35, 35, 35))
+    draw.rectangle([22, 0, 26, 2], fill=(35, 35, 35))
+    draw.rectangle([12, 4, 14, 6], fill=(35, 35, 35))
+    draw.rectangle([26, 4, 28, 6], fill=(35, 35, 35))
+    draw.rectangle([16, 0, 24, 1], fill=(15, 15, 15))
+    # Eyes
+    draw.ellipse([16, 8, 20, 12], fill=(255, 255, 255))
+    draw.ellipse([20, 8, 24, 12], fill=(255, 255, 255))
+    draw.ellipse([17, 9, 19, 11], fill=(15, 15, 15))
+    draw.ellipse([21, 9, 23, 11], fill=(15, 15, 15))
+    draw.point([(18, 10)], fill=(255, 255, 255))
+    draw.point([(22, 10)], fill=(255, 255, 255))
+    # Mouth
+    draw.arc([17, 10, 23, 14], start=0, end=180, fill=(200, 120, 100), width=1)
+    # Blush
+    draw.ellipse([14, 11, 16, 13], fill=(255, 160, 160))
+    draw.ellipse([24, 11, 26, 13], fill=(255, 160, 160))
+
+# ============== 流浪猫 40x40 ==============
+def draw_cat(draw, w, h):
+    # Tail
+    draw.line([(4, 32), (8, 22), (6, 12), (10, 6)], fill=(235, 140, 50), width=3)
+    draw.line([(4, 32), (8, 22), (6, 12), (10, 6)], fill=(255, 170, 80), width=1)
+    # Back legs
+    draw.rectangle([6, 28, 12, 36], fill=(235, 140, 50))
+    draw.rectangle([6, 28, 8, 36], fill=(255, 170, 80))
+    draw.rectangle([10, 28, 12, 36], fill=(215, 120, 40))
+    # Body
+    draw.ellipse([8, 14, 32, 32], fill=(235, 140, 50))
+    draw.ellipse([8, 14, 20, 24], fill=(255, 170, 80))
+    draw.ellipse([26, 18, 32, 28], fill=(215, 120, 40))
+    # Stripes
+    draw.line([(14, 16), (18, 20)], fill=(200, 100, 30), width=2)
+    draw.line([(20, 16), (24, 20)], fill=(200, 100, 30), width=2)
+    draw.line([(16, 22), (20, 26)], fill=(200, 100, 30), width=2)
+    # Front legs
+    draw.rectangle([24, 26, 30, 36], fill=(235, 140, 50))
+    draw.rectangle([24, 26, 26, 36], fill=(255, 170, 80))
+    draw.rectangle([28, 26, 30, 36], fill=(215, 120, 40))
+    # Paws
+    draw.ellipse([5, 34, 13, 40], fill=(255, 200, 160))
+    draw.ellipse([23, 34, 31, 40], fill=(255, 200, 160))
+    # Head
+    draw.ellipse([18, 4, 36, 20], fill=(235, 140, 50))
+    draw.ellipse([18, 4, 26, 12], fill=(255, 170, 80))
+    draw.ellipse([32, 8, 36, 16], fill=(215, 120, 40))
+    # Ears
+    draw.polygon([(20, 6), (18, 0), (24, 4)], fill=(235, 140, 50))
+    draw.polygon([(20, 6), (18, 0), (22, 4)], fill=(255, 170, 80))
+    draw.polygon([(32, 6), (36, 0), (34, 4)], fill=(235, 140, 50))
+    draw.polygon([(32, 6), (36, 0), (34, 4)], fill=(255, 170, 80))
+    draw.polygon([(19, 2), (21, 0), (23, 2)], fill=(255, 160, 160))
+    draw.polygon([(33, 2), (35, 0), (37, 2)], fill=(255, 160, 160))
+    # Eyes
+    draw.ellipse([22, 8, 26, 12], fill=(255, 255, 255))
+    draw.ellipse([28, 8, 32, 12], fill=(255, 255, 255))
+    draw.ellipse([23, 9, 25, 11], fill=(10, 10, 10))
+    draw.ellipse([29, 9, 31, 11], fill=(10, 10, 10))
+    draw.point([(24, 10)], fill=(255, 255, 255))
+    draw.point([(30, 10)], fill=(255, 255, 255))
+    # Nose
+    draw.ellipse([26, 12, 28, 14], fill=(255, 160, 160))
+    # Whiskers
+    draw.line([(18, 12), (10, 10)], fill=(255, 255, 255), width=1)
+    draw.line([(18, 13), (10, 14)], fill=(255, 255, 255), width=1)
+    draw.line([(36, 12), (44, 10)], fill=(255, 255, 255), width=1)
+    draw.line([(36, 13), (44, 14)], fill=(255, 255, 255), width=1)
+    # Mouth
+    draw.arc([24, 12, 30, 16], start=0, end=180, fill=(200, 100, 100), width=1)
+
+# ============== 天台平台 40x40 ==============
+def draw_rooftop_tile(draw, w, h):
+    base = (100, 105, 110)
+    hi = (130, 135, 140)
+    sh = (75, 80, 85)
+    draw.rectangle([0, 0, 40, 40], fill=base)
+    draw.rectangle([0, 0, 40, 3], fill=hi)
+    draw.rectangle([0, 0, 3, 40], fill=hi)
+    draw.rectangle([0, 37, 40, 40], fill=sh)
+    draw.rectangle([37, 0, 40, 40], fill=sh)
+    # Concrete texture
+    for y in range(5, 35, 7):
+        for x in range(5, 35, 7):
+            if random.random() < 0.4:
+                draw.rectangle([x, y, x+2, y+2], fill=(110, 115, 120))
+            elif random.random() < 0.3:
+                draw.rectangle([x, y, x+2, y+2], fill=(90, 95, 100))
+    # Weathering cracks
+    draw.line([(10, 15), (18, 18)], fill=(70, 75, 80), width=1)
+    draw.line([(25, 8), (28, 16)], fill=(70, 75, 80), width=1)
+    draw.line([(8, 28), (16, 30)], fill=(70, 75, 80), width=1)
+    # Edge detail
+    draw.line([(3, 3), (37, 3)], fill=(140, 145, 150), width=1)
+    draw.line([(3, 3), (3, 37)], fill=(140, 145, 150), width=1)
+
+# ============== 背景建筑剪影 60x100 ==============
+def draw_building(draw, w, h):
+    draw.rectangle([0, 0, w, h], fill=(50, 45, 60))
+    draw.rectangle([0, 0, w, 4], fill=(65, 60, 75))
+    draw.rectangle([0, 0, 4, h], fill=(65, 60, 75))
+    draw.rectangle([0, h-4, w, h], fill=(40, 35, 50))
+    draw.rectangle([w-4, 0, w, h], fill=(40, 35, 50))
+    # Windows
+    for wy in range(10, h-10, 12):
+        for wx in range(8, w-8, 10):
+            if random.random() < 0.35:
+                draw.rectangle([wx, wy, wx+4, wy+6], fill=(255, 220, 120))
+                draw.rectangle([wx, wy, wx+4, wy+1], fill=(255, 240, 180))
+            else:
+                draw.rectangle([wx, wy, wx+4, wy+6], fill=(45, 40, 55))
+
+# ============== 西瓜 30x30 ==============
+def draw_watermelon(draw, w, h):
+    draw.ellipse([0, 0, 30, 30], fill=(40, 160, 60), outline=(25, 120, 40), width=2)
+    draw.ellipse([4, 4, 26, 26], fill=(230, 60, 60))
+    draw.ellipse([6, 6, 12, 10], fill=(255, 100, 100))
+    for pos in [(10, 10), (18, 12), (12, 18), (20, 20)]:
+        draw.ellipse([pos[0], pos[1], pos[0]+2, pos[1]+3], fill=(20, 20, 20))
+
+# ============== 冰棍 20x40 ==============
+def draw_ice_cream(draw, w, h):
+    draw.rectangle([8, 30, 12, 40], fill=(210, 170, 120))
+    draw.rectangle([2, 2, 18, 32], fill=(255, 120, 120), outline=(230, 90, 90), width=2)
+    draw.rectangle([2, 8, 18, 12], fill=(255, 200, 100))
+    draw.rectangle([2, 18, 18, 22], fill=(100, 200, 255))
+
+# ============== 磁带 30x20 ==============
+def draw_tape(draw, w, h):
+    draw.rectangle([0, 0, 30, 20], fill=(40, 40, 40), outline=(20, 20, 20), width=2)
+    draw.rectangle([2, 2, 28, 18], fill=(60, 60, 60))
+    draw.ellipse([6, 6, 12, 14], fill=(20, 20, 20))
+    draw.ellipse([18, 6, 24, 14], fill=(20, 20, 20))
+    draw.rectangle([8, 2, 22, 8], fill=(255, 255, 255))
+    draw.rectangle([8, 2, 22, 3], fill=(220, 220, 220))
+
+# ============== 空调外机 40x30 ==============
+def draw_ac_unit(draw, w, h):
+    draw.rectangle([0, 0, 40, 30], fill=(200, 200, 205), outline=(170, 170, 175), width=2)
+    draw.rectangle([2, 2, 38, 28], fill=(220, 220, 225))
+    for y in range(6, 26, 5):
+        draw.line([(4, y), (36, y)], fill=(180, 180, 185), width=2)
+    for x in range(8, 36, 6):
+        draw.line([(x, 6), (x, 24)], fill=(180, 180, 185), width=1)
+    draw.rectangle([8, 2, 32, 6], fill=(240, 240, 240))
+
+# ============== 铁栅栏 40x40 ==============
+def draw_railing(draw, w, h):
+    draw.rectangle([0, 0, 40, 6], fill=(160, 160, 165), outline=(130, 130, 135), width=1)
+    for x in [4, 12, 20, 28, 36]:
+        draw.rectangle([x-1, 6, x+1, 38], fill=(170, 170, 175), outline=(140, 140, 145), width=1)
+    draw.rectangle([0, 36, 40, 40], fill=(160, 160, 165), outline=(130, 130, 135), width=1)
+
+# ============== 晾衣绳 100x12 ==============
+def draw_clothesline(draw, w, h):
+    # Rope
+    draw.line([(0, 2), (w, 2)], fill=(180, 160, 140), width=2)
+    draw.line([(0, 1), (w, 1)], fill=(210, 190, 170), width=1)
+    # Hanging shirts
+    for x in [15, 45, 75]:
+        # Body
+        draw.rectangle([x, 3, x+10, 10], fill=(255, 120, 120))
+        draw.rectangle([x, 3, x+10, 4], fill=(255, 160, 160))
+        # Sleeves
+        draw.rectangle([x-2, 4, x, 7], fill=(255, 100, 100))
+        draw.rectangle([x+10, 4, x+12, 7], fill=(255, 100, 100))
+        # Clothespins
+        draw.line([(x+2, 2), (x+2, 3)], fill=(255, 255, 255), width=1)
+        draw.line([(x+8, 2), (x+8, 3)], fill=(255, 255, 255), width=1)
+
+# ============== 天线杆 20x80 ==============
+def draw_antenna(draw, w, h):
+    # Pole
+    draw.rectangle([8, 0, 12, h], fill=(160, 160, 165))
+    draw.rectangle([8, 0, 10, h], fill=(190, 190, 195))
+    draw.rectangle([11, 0, 12, h], fill=(130, 130, 135))
+    # Crossbars
+    for y in [12, 32, 52]:
+        draw.line([(2, y), (18, y)], fill=(160, 160, 165), width=2)
+        draw.line([(2, y-1), (18, y-1)], fill=(190, 190, 195), width=1)
+    # Top tip
+    draw.polygon([(10, 0), (6, -6), (14, -6)], fill=(160, 160, 165))
+
+# ============== 飞鸟 20x10 ==============
+def draw_bird(draw, w, h):
+    draw.polygon([(0, 6), (6, 0), (10, 4)], fill=(60, 55, 70))
+    draw.polygon([(10, 4), (14, 0), (20, 6)], fill=(60, 55, 70))
+    draw.polygon([(6, 0), (10, 4), (8, 2)], fill=(80, 75, 90))
+    draw.polygon([(14, 0), (10, 4), (12, 2)], fill=(80, 75, 90))
+
+# ============== 检查点 30x40 ==============
+def draw_checkpoint(draw, w, h):
+    # Pole
+    draw.rectangle([13, 10, 17, 40], fill=(120, 120, 125))
+    draw.rectangle([13, 10, 15, 40], fill=(150, 150, 155))
+    # Light box
+    draw.rectangle([5, 2, 25, 14], fill=(255, 60, 60))
+    draw.rectangle([5, 2, 25, 4], fill=(255, 120, 120))
+    draw.rectangle([5, 2, 7, 14], fill=(255, 120, 120))
+    draw.rectangle([23, 2, 25, 14], fill=(200, 40, 40))
+    # Arrow
+    draw.polygon([(10, 5), (16, 8), (10, 11)], fill=(255, 255, 255))
+    # Glow
+    draw.ellipse([20, 6, 22, 8], fill=(255, 255, 200))
+
+# ============== 水塔 60x100 ==============
+def draw_watertower(draw, w, h):
+    # Legs
+    draw.rectangle([10, 60, 14, 100], fill=(140, 140, 145))
+    draw.rectangle([46, 60, 50, 100], fill=(140, 140, 145))
+    draw.rectangle([10, 60, 12, 100], fill=(170, 170, 175))
+    draw.rectangle([46, 60, 48, 100], fill=(170, 170, 175))
+    # Cross braces
+    draw.line([(12, 70), (48, 90)], fill=(120, 120, 125), width=2)
+    draw.line([(12, 90), (48, 70)], fill=(120, 120, 125), width=2)
+    # Tank body
+    draw.rectangle([8, 20, 52, 65], fill=(180, 185, 190))
+    draw.rectangle([8, 20, 52, 24], fill=(210, 215, 220))
+    draw.rectangle([8, 20, 12, 65], fill=(210, 215, 220))
+    draw.rectangle([48, 20, 52, 65], fill=(150, 155, 160))
+    # Tank top cone
+    draw.polygon([(8, 20), (30, 0), (52, 20)], fill=(200, 205, 210))
+    draw.polygon([(8, 20), (30, 0), (20, 15)], fill=(230, 235, 240))
+    draw.polygon([(30, 0), (52, 20), (40, 15)], fill=(170, 175, 180))
+    # Detail lines
+    draw.line([(8, 35), (52, 35)], fill=(150, 155, 160), width=1)
+    draw.line([(8, 50), (52, 50)], fill=(150, 155, 160), width=1)
+    # Ladder
+    for y in range(25, 60, 6):
+        draw.line([(28, y), (32, y)], fill=(100, 100, 105), width=1)
+    draw.line([(30, 25), (30, 60)], fill=(100, 100, 105), width=1)
+
 # ============== 生成所有素材 ==============
 save_img("player.png", 40, 60, draw_player)
 save_img("big_player.png", 40, 80, draw_big_player)
@@ -574,4 +1141,23 @@ save_img("castle.png", 120, 120, draw_castle)
 save_img("used_block.png", 40, 40, draw_used_block)
 save_img("1up.png", 40, 40, draw_1up)
 save_img("cloud.png", 80, 40, draw_cloud)
+save_img("summer_player_idle.png", 40, 60, draw_summer_player_idle)
+save_img("summer_player_run1.png", 40, 60, draw_summer_player_run1)
+save_img("summer_player_run2.png", 40, 60, draw_summer_player_run2)
+save_img("summer_player_run3.png", 40, 60, draw_summer_player_run3)
+save_img("summer_player_jump.png", 40, 60, draw_summer_player_jump)
+save_img("summer_player_crouch.png", 40, 60, draw_summer_player_crouch)
+save_img("cat.png", 40, 40, draw_cat)
+save_img("rooftop_tile.png", 40, 40, draw_rooftop_tile)
+save_img("watermelon.png", 30, 30, draw_watermelon)
+save_img("ice_cream.png", 20, 40, draw_ice_cream)
+save_img("tape.png", 30, 20, draw_tape)
+save_img("ac_unit.png", 40, 30, draw_ac_unit)
+save_img("railing.png", 40, 40, draw_railing)
+save_img("building.png", 60, 100, draw_building)
+save_img("clothesline.png", 100, 12, draw_clothesline)
+save_img("antenna.png", 20, 80, draw_antenna)
+save_img("bird.png", 20, 10, draw_bird)
+save_img("checkpoint.png", 30, 40, draw_checkpoint)
+save_img("watertower.png", 60, 100, draw_watertower)
 print("素材生成完成")
